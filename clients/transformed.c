@@ -1,27 +1,3 @@
-/*
- * Copyright © 2008 Kristian Høgsberg
- * Copyright © 2012 Intel Corporation
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice (including the next
- * paragraph) shall be included in all copies or substantial portions of the
- * Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-
 #include "config.h"
 
 #include <stdint.h>
@@ -148,69 +124,15 @@ key_handler(struct window *window, struct input *input, uint32_t time,
 
 	transform = window_get_buffer_transform (window);
 	scale = window_get_buffer_scale (window);
-	switch (sym) {
-	case XKB_KEY_Left:
-		if (transform == 0)
-			transform = 3;
-		else if (transform == 4)
-			transform = 7;
-		else
-			transform--;
-		break;
 
-	case XKB_KEY_Right:
-		if (transform == 3)
-			transform = 0;
-		else if (transform == 7)
-			transform = 4;
-		else
-			transform++;
-		break;
+               if (transform >= 4)
+                       transform -= 4;
+               else
+                       transform += 4;
 
-	case XKB_KEY_space:
-		if (transform >= 4)
-			transform -= 4;
-		else
-			transform += 4;
-		break;
-
-	case XKB_KEY_z:
-		if (scale == 1)
-			scale = 2;
-		else
-			scale = 1;
-		break;
-	}
-
-	printf ("setting buffer transform to %d\n", transform);
-	printf ("setting buffer scale to %d\n", scale);
-	window_set_buffer_transform(window, transform);
-	window_set_buffer_scale(window, scale);
-	window_schedule_redraw(window);
-}
-
-static void
-button_handler(struct widget *widget,
-	       struct input *input, uint32_t time,
-	       uint32_t button, enum wl_pointer_button_state state, void *data)
-{
-	struct transformed *transformed = data;
-
-	switch (button) {
-	case BTN_LEFT:
-		if (state == WL_POINTER_BUTTON_STATE_PRESSED)
-			window_move(transformed->window, input,
-				    display_get_serial(transformed->display));
-		break;
-	case BTN_MIDDLE:
-		if (state == WL_POINTER_BUTTON_STATE_PRESSED)
-			widget_schedule_redraw(widget);
-		break;
-	case BTN_RIGHT:
-		if (state == WL_POINTER_BUTTON_STATE_PRESSED)
-			window_show_frame_menu(transformed->window, input, time);
-		break;
-	}
+        window_set_buffer_transform(window, transform);
+        window_set_buffer_scale(window, scale);
+        window_schedule_redraw(window);
 }
 
 static void
@@ -278,7 +200,6 @@ int main(int argc, char *argv[])
 	widget_set_default_cursor(transformed.widget, CURSOR_BLANK);
 
 	widget_set_redraw_handler(transformed.widget, redraw_handler);
-	widget_set_button_handler(transformed.widget, button_handler);
 
 	widget_set_touch_down_handler(transformed.widget, touch_handler);
 
