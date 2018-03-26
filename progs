@@ -1,4 +1,6 @@
 sudo apt-get install libxcb-composite0-dev libgbm-dev libudev-dev libinput-dev libpam-dev
+./autogen.sh
+make
 weston-presentation-shm
 weston-simple-damage
 weston-simple-shm
