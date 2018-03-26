@@ -6,4 +6,4 @@ test -n "$srcdir" || srcdir=.
   cd "$srcdir" &&
   autoreconf --force -v --install
 ) || exit
-test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
+test -n "$NOCONFIGURE" || "$srcdir/configure" --disable-egl --disable-simple-dmabuf-drm-client "$@"
