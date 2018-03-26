@@ -4,3 +4,4 @@ make
 weston-presentation-shm
 weston-simple-damage
 weston-simple-shm
+weston-transformed
